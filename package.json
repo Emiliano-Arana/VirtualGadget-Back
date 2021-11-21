@@ -1,0 +1,28 @@
+{
+  "name": "virtualgadget-back",
+  "version": "1.0.0",
+  "description": "Chats por salas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emiliano-Arana/VirtualGadget-Back.git"
+  },
+  "author": "VirtualGadget",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Emiliano-Arana/VirtualGadget-Back/issues"
+  },
+  "homepage": "https://github.com/Emiliano-Arana/VirtualGadget-Back#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "socket.io": "^4.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

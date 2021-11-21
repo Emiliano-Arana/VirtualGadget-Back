@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"/>
+	<link rel="stylesheet" href="css/style.css" />
+	<title>Chats</title>
+</head>
+<body>
+    <div class="join-container">
+        <header class="join-header">
+            <h1>Salas de Chats</h1>
+        </header>
+        <main class="join-main">
+            <form action="chat.html">
+                <div class="form-control">
+                    <label for="username">Usuario</label>
+                    <input
+                        type="text"
+                        name="username"
+                        id="username"
+                        placeholder="Usuario"
+                        required
+                    />
+                </div>
+                <div class="form-control">
+                    <label for="room">Sala</label>
+                    <select name="room" id="room">
+                        <option value="Sala1">Sala 1</option>
+                        <option value="Sala2">Sala 2</option>
+                        <option value="Sala3">Sala 3</option>
+                        <option value="Sala4">Sala 4</option>
+                        <option value="Sala5">Sala 5</option>
+                        <option value="Sala6">Sala 6</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

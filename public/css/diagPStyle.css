@@ -1,0 +1,39 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.texto{
+    margin: 10px auto;
+    display: flex;
+    padding: 3px;
+    font-size: 20px;
+}
+
+.boton{
+    display: flex;
+    margin: 10px auto;
+    padding: 6px;
+    font-size: 18px;
+    border-radius: 10px;
+    background-color: beige;
+}
+
+#forma,#valorFl{
+    display: flex;
+    margin: 10px auto;
+    padding: 3px;
+    font-size: 20px;
+}
+
+.left-side{
+    width: 300px;
+    height: 800px;
+    border: 1px solid;
+    float: right;
+}
+
+.lienzo{
+    position: relative;
+    float: left;
+}

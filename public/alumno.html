@@ -10,6 +10,8 @@
 <body>
   <div class="interact-container">
     <div class="left-side">
+      <p>nombre</p>
+      <p>descripcion</p>
     </div>
     <canvas width="1200" height="800" id="lienzo"></canvas>
   </div>
@@ -25,6 +27,7 @@
       cx.fillRect(0, 0, 1200, 800);
       cx.font = "12px sans-serif";
       cx.fillStyle="black";
+      
       for (var i = 0; i < casillas.length; i++) {
         if(casillas[i].tipo=='proceso'){
           cx.beginPath();

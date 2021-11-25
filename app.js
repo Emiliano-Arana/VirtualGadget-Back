@@ -123,43 +123,36 @@ app.post('/addEscenario',(req,res) =>{
     let arrY = y.split(";")
     let arrIds = ids.split(";")
 
-    let idElm = 0
-    let idEsc = 0
+    let idEsc,idElm
 
     con.query('INSERT INTO escenariosprofesores(id_usuario,tipo) values(1,"'+nombre+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
     con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
-        console.log(respuesta.id_escenario)
         respuesta.forEach(maxim =>{
-            idEsc = maxim.id_escenario;
-            console.log(idEsc)
+            idEsc = maxim.id_escenario
         })
-    })
-    //
-    console.log(idEsc)
-    for(let i=0;i<arrX.length;i++){
-        con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+',"'+arrTipo[i]+'")',(err,respuesta,fields)=>{
-            if(err)return console.log('ERROR',err);
-    
-        })
-        con.query('SELECT * FROM elementos',(err,respuesta,fields)=>{
+        for(let i=0;i<arrX.length;i++){
+            con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+',"'+arrTipo[i]+'")',(err,respuesta,fields)=>{
+                if(err)return console.log('ERROR',err);
+        
+            })
+        }
+        con.query('SELECT id_elemento FROM elementos',(err,respuesta,fields)=>{
             if(err)return console.log('ERROR',err);
             
-            respuesta.forEach(maxim =>{
-                idElm = `${maxim.id_escenario}`
-                idElm = parseInt(idEsc, 10);
-            })
+            for(let i=0;i<arrX.length;i++){
+                arrIds[arrX.length-1-i] = respuesta[respuesta.length-1-i].id_elemento
+            }
+            for(let i=0;i<arrDesde.length;i++){
+                con.query('INSERT INTO relaciones(desde,hasta) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+')',(err,respuesta,fields)=>{
+                    if(err)return console.log('ERROR',err);
+                    
+                })
+            }
         })
-        arrIds[i] = idElm
-    }
-    for(let i=0;i<arrDesde.length;i++){
-        con.query('INSERT INTO relaciones(desde,hasta) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+')',(err,respuesta,fields)=>{
-            if(err)return console.log('ERROR',err);
-    
-        })
-    }
+    })
     return res.send(`
         <p>a</p>    
     `)

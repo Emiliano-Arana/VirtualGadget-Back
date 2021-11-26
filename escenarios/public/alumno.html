@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/diagPStyle.css">
+  <title>Crear Escenario</title>
+  <link rel="stylesheet" href="css/diagPStyle.css">
+  
+</head>
+<body>
+  <div class="interact-container">
+    <div class="left-side">
+      <h3>Spectre</h3>
+      <h4>Escenarios</h4>
+      <p>nombre</p>
+      <p>descripcion</p>
+    </div>
+    <canvas width="1000" height="800" id="lienzo"></canvas>
+  </div>
+  <script>
+    var cv, cx, objetos,casillas,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',respuestasC;
+    var inicioX = 0, inicioY = 0;
+    objetos = [];
+    flechas = [];
+    casillas = [];
+
+    function actualizar() {
+      cx.fillStyle = '#f0f0f0';
+      cx.fillRect(0, 0, 1000, 800);
+      cx.font = "12px sans-serif";
+      cx.fillStyle="black";
+      
+      for (var i = 0; i < casillas.length; i++) {
+        if(casillas[i].tipo=='proceso'){
+          cx.beginPath();
+          cx.strokeRect(casillas[i].x, casillas[i].y, casillas[i].width, casillas[i].height);
+          cx.fillText(casillas[i].texto,casillas[i].x+10,casillas[i].y+(casillas[i].height/2));
+          cx.closePath();
+        }else if(casillas[i].tipo=='limites'){
+          cx.beginPath();
+          cx.arc(casillas[i].x, casillas[i].y, casillas[i].width/2, 0, Math.PI*2, false);
+          cx.fillText(casillas[i].texto,casillas[i].x-(casillas[i].width/2)+40,casillas[i].y);
+          cx.stroke();
+          cx.closePath();
+        }else if(casillas[i].tipo=='decision'){
+          cx.beginPath();
+          cx.moveTo(casillas[i].x, casillas[i].y);
+          cx.lineTo((casillas[i].width/2)+casillas[i].x, casillas[i].y+(casillas[i].height/2));
+          cx.lineTo(casillas[i].x, casillas[i].y+casillas[i].height);
+          cx.lineTo(casillas[i].x-(casillas[i].width/2), casillas[i].y+(casillas[i].height/2));
+          cx.fillText(casillas[i].texto,casillas[i].x-(casillas[i].width/2)+10,casillas[i].y+(casillas[i].height/2)+5);
+          cx.closePath();
+          cx.stroke();
+        }else if(casillas[i].tipo=='entradaSalida'){
+          cx.beginPath();
+          cx.moveTo(casillas[i].x, casillas[i].y);
+          cx.lineTo(casillas[i].x+casillas[i].width, casillas[i].y);
+          cx.lineTo(casillas[i].x+casillas[i].width-20, casillas[i].y+casillas[i].height);
+          cx.lineTo(casillas[i].x-20, casillas[i].y+casillas[i].height);
+          cx.fillText(casillas[i].texto,casillas[i].x,casillas[i].y+(casillas[i].height/2));
+          cx.closePath();
+          cx.stroke();
+        }
+      }
+      for (var i = 0; i < objetos.length; i++) {
+        if(objetos[i].tipo=='proceso'){
+          cx.beginPath();
+          cx.strokeRect(objetos[i].x, objetos[i].y, objetos[i].width, objetos[i].height);
+          cx.fillText(objetos[i].texto,objetos[i].x+10,objetos[i].y+(objetos[i].height/2));
+          cx.closePath();
+        }else if(objetos[i].tipo=='limites'){
+          cx.beginPath();
+          cx.arc(objetos[i].x, objetos[i].y, objetos[i].width/2, 0, Math.PI*2, false);
+          cx.fillText(objetos[i].texto,objetos[i].x-(objetos[i].width/2)+40,objetos[i].y);
+          cx.stroke();
+          cx.closePath();
+        }else if(objetos[i].tipo=='decision'){
+          cx.beginPath();
+          cx.moveTo(objetos[i].x, objetos[i].y);
+          cx.lineTo((objetos[i].width/2)+objetos[i].x, objetos[i].y+(objetos[i].height/2));
+          cx.lineTo(objetos[i].x, objetos[i].y+objetos[i].height);
+          cx.lineTo(objetos[i].x-(objetos[i].width/2), objetos[i].y+(objetos[i].height/2));
+          cx.fillText(objetos[i].texto,objetos[i].x-(objetos[i].width/2)+10,objetos[i].y+(objetos[i].height/2)+5);
+          cx.closePath();
+          cx.stroke();
+        }else if(objetos[i].tipo=='entradaSalida'){
+          cx.beginPath();
+          cx.moveTo(objetos[i].x, objetos[i].y);
+          cx.lineTo(objetos[i].x+objetos[i].width, objetos[i].y);
+          cx.lineTo(objetos[i].x+objetos[i].width-20, objetos[i].y+objetos[i].height);
+          cx.lineTo(objetos[i].x-20, objetos[i].y+objetos[i].height);
+          cx.fillText(objetos[i].texto,objetos[i].x,objetos[i].y+(objetos[i].height/2));
+          cx.closePath();
+          cx.stroke();
+        }
+      }
+    }
+
+    function iman(){
+      for(var i=0;i<casillas.length;i++){
+          if(objetoActual.tipo=='proceso'){
+            if(casillas[i].tipo=='proceso'){
+              if(Math.abs(objetoActual.x-casillas[i].x)<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x;
+                objetoActual.y = casillas[i].y;
+              }
+            }else if(casillas[i].tipo=='decision'){
+              if(Math.abs(objetoActual.x-casillas[i].x+(casillas[i].width/2))<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x-(casillas[i].width/2);
+                objetoActual.y = casillas[i].y;
+              }
+            }else if(casillas[i].tipo=='entradaSalida'){
+              if(Math.abs(objetoActual.x-casillas[i].x+20)<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x-20;
+                objetoActual.y = casillas[i].y;
+              }
+            }
+          }else if(objetoActual.tipo=='decision'){
+            if(casillas[i].tipo=='proceso'){
+              if(Math.abs(objetoActual.x-casillas[i].x-(casillas[i].width/2))<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x+(casillas[i].width/2);
+                objetoActual.y = casillas[i].y;
+              }
+            }else if(casillas[i].tipo=='decision'){
+              if(Math.abs(objetoActual.x-casillas[i].x)<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x;
+                objetoActual.y = casillas[i].y;
+              }
+            }else if(casillas[i].tipo=='entradaSalida'){
+              if(Math.abs(objetoActual.x-casillas[i].x-(casillas[i].width/2))<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x+(casillas[i].width/2);
+                objetoActual.y = casillas[i].y;
+              }
+            }
+          }else if(objetoActual.tipo=='entradaSalida'){
+            if(casillas[i].tipo=='proceso'){
+              if(Math.abs(objetoActual.x-casillas[i].x-20)<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x+20;
+                objetoActual.y = casillas[i].y;
+              }
+            }else if(casillas[i].tipo=='decision'){
+              if(Math.abs(objetoActual.x-casillas[i].x+(casillas[i].width/2)-20)<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x-(casillas[i].width/2)+20;
+                objetoActual.y = casillas[i].y;
+              }
+            }else if(casillas[i].tipo=='entradaSalida'){
+              if(Math.abs(objetoActual.x-casillas[i].x)<15 && Math.abs(objetoActual.y-casillas[i].y)<15){
+                objetoActual.x = casillas[i].x;
+                objetoActual.y = casillas[i].y;
+              }
+            }
+          }
+      }
+    }
+
+    function comprobarResultados(){
+      respuestasC = new Array(casillas.length);
+      for(var i = 0; i < respuestasC.length; i++){
+        respuestasC[i] = false;
+      }
+      for (var i = 0; i < casillas.length; i++) {
+        for (var i = 0; i < objetos.length; i++) {
+          if((casillas[i].x==objetos[i].x)&&(casillas[i].y==objetos[i].y)&&(casillas[i].texto==objetos[i].texto)&&(casillas[i].tipo==objetos[i].tipo)){
+            respuestasC[i] = true;
+          }
+        }
+      }
+    }
+
+    window.onload = function() {
+      cv = document.getElementById('lienzo');
+      cx = cv.getContext('2d');
+      //objetos prueba
+      casillas.push({
+        x:200,y:200,
+        height:80,
+        width:120,
+        tipo:'entradaSalida',
+        texto:'a'
+      })
+
+      objetos.push({
+        x:100,y:100,
+        height:80,
+        width:120,
+        tipo:'decision',
+        texto:'s'
+      })
+
+      cv.onmousedown = function(event) {
+          for (var i = 0; i < objetos.length; i++) {
+            if(objetos[i].tipo=='proceso'){
+              if (objetos[i].x < event.clientX
+                && (objetos[i].width + objetos[i].x > event.clientX)
+                && objetos[i].y < event.clientY
+                && (objetos[i].height + objetos[i].y > event.clientY)
+              ) {
+                objetoActual = objetos[i];
+                inicioY = event.clientY - objetos[i].y;
+                inicioX = event.clientX - objetos[i].x;
+                break;
+              }
+            }else if(objetos[i].tipo=='limites'){
+              if (objetos[i].x-(objetos[i].width/2) < event.clientX
+                && (objetos[i].x + (objetos[i].width/2) > event.clientX)
+                && objetos[i].y-(objetos[i].width/2) < event.clientY
+                && ((objetos[i].width/2) + objetos[i].y > event.clientY)
+              ) {
+                objetoActual = objetos[i];
+                inicioY = event.clientY - objetos[i].y;
+                inicioX = event.clientX - objetos[i].x;
+                break;
+              }
+            }else if(objetos[i].tipo=='decision'){
+              if ((objetos[i].x-(objetos[i].width/2)) < event.clientX
+                && ((objetos[i].width/2) + objetos[i].x > event.clientX)
+                && objetos[i].y < event.clientY
+                && (objetos[i].height + objetos[i].y > event.clientY)
+              ) {
+                objetoActual = objetos[i];
+                inicioY = event.clientY - objetos[i].y;
+                inicioX = event.clientX - objetos[i].x;
+                break;
+              }
+            }else if(objetos[i].tipo=='entradaSalida'){
+              if ((objetos[i].x-20) < event.clientX
+                && (objetos[i].width + objetos[i].x > event.clientX)
+                && objetos[i].y < event.clientY
+                && (objetos[i].height + objetos[i].y > event.clientY)
+              ) {
+                objetoActual = objetos[i];
+                inicioY = event.clientY - objetos[i].y;
+                inicioX = event.clientX - objetos[i].x;
+                break;
+              }
+            }
+          }
+      }
+
+      cv.onmousemove = function(event) {
+        if (objetoActual != null) {
+          objetoActual.x = event.clientX - inicioX;
+          objetoActual.y = event.clientY - inicioY;
+          iman();
+        }
+        actualizar();
+      }
+
+      cv.onmouseup = function(evet) {
+        objetoActual = null;
+      }
+    }
+  </script>
+</body>
+</html>

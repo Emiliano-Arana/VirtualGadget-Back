@@ -25,7 +25,7 @@ app.get('/getEscenarioAl',(req,res) =>{
         if(err)return console.log('ERROR',err);
 
         let nom = respuesta.tipo
-        let desc 
+        let desc = respuesta.descripcion
 
         con.query('SELECT * FROM elementos WHERE id_escenario = '+id,(err,respuesta,fields)=>{
             if(err)return console.log('ERROR',err);
@@ -109,8 +109,8 @@ app.get('/getEscenarioAl',(req,res) =>{
             <body>
               <div class="interact-container">
                 <div class="left-side">
-                  <p>nombre</p>
-                  <p>descripcion</p>
+                  <p>${nom}</p>
+                  <p>${desc}</p>
                   <form action="/califEscAl" method="post">
                     <input type="text" id="calif" name="calif" style="display: none;">
                     <input type="text" id="idE" name="idE" style="display: none;" value="${id}">
@@ -140,9 +140,15 @@ app.get('/getEscenarioAl',(req,res) =>{
                       cx.beginPath();
                       cx.moveTo(casillas[flechas[i].desde].x, casillas[flechas[i].desde].y+(casillas[flechas[i].desde].width/2));
                     }else if(casillas[flechas[i].desde].tipo=='decision'){
+                      if(flechas[i].txt=='Si'){
                         cx.beginPath();
                         cx.moveTo(casillas[flechas[i].desde].x, casillas[flechas[i].desde].y+casillas[flechas[i].desde].height);
                         cx.fillText('Si',casillas[flechas[i].desde].x+10,casillas[flechas[i].desde].y+casillas[flechas[i].desde].height+10);
+                      }else{
+                        cx.beginPath();
+                        cx.moveTo(casillas[flechas[i].desde].x+(casillas[flechas[i].desde].width/2), casillas[flechas[i].desde].y+(casillas[flechas[i].desde].height/2));
+                        cx.fillText('No',casillas[flechas[i].desde].x+(casillas[flechas[i].desde].width/2)+10,casillas[flechas[i].desde].y+(casillas[flechas[i].desde].height/2)-10);
+                      }
                     }else if(casillas[flechas[i].desde].tipo=='entradaSalida'){
                       cx.beginPath();
                       cx.moveTo(casillas[flechas[i].desde].x-20+(casillas[flechas[i].desde].width/2), casillas[flechas[i].desde].y+casillas[flechas[i].desde].height);
@@ -187,8 +193,8 @@ app.get('/getEscenarioAl',(req,res) =>{
                       cx.closePath();
                     }else if(objetos[i].tipo=='limites'){
                       cx.beginPath();
-                      cx.arc(objetos[i].x, objetos[i].y, objetos[i].width/2, 0, Math.PI*2, false);
-                      cx.fillText(objetos[i].texto,objetos[i].x-(objetos[i].width/2)+40,objetos[i].y);
+                      cx.arc(casillas[i].x, casillas[i].y, casillas[i].width/2, 0, Math.PI*2, false);
+                      cx.fillText(casillas[i].texto,casillas[i].x-(casillas[i].width/2)+40,casillas[i].y);
                       cx.stroke();
                       cx.closePath();
                     }else if(objetos[i].tipo=='decision'){
@@ -443,6 +449,34 @@ app.get('/getEscenarioListPr',(req,res) =>{
 
 app.post('/deleteEscenario',(req,res) =>{
     let id = req.body.id
+    let idsEl = []
+
+    con.query('SELECT * FROM elementos WHERE id_escenario = '+id,(err,respuesta,fields)=>{
+      if(err)return console.log('ERROR',err);
+
+      respuesta.forEach(obj =>{
+          idsEl.push({
+              idE:obj.id_elemento
+          })
+      })
+      let txtQuery = ''
+
+            for(let i=0;i<idsEl.length;i++){
+                txtQuery += ' desde = '+idsEl[i].idE+' or hasta = '+idsEl[i].idE
+                if(i<(idsEl.length-1)){
+                    txtQuery += ' or'
+                }
+            }
+            con.query('DELETE FROM relaciones WHERE'+txtQuery,(err,respuesta,fields)=>{
+              if(err)return console.log('ERROR',err);
+
+            })
+    })
+
+    con.query('DELETE FROM elementos WHERE id_escenario = '+id,(err,respuesta,fields)=>{
+      if(err)return console.log('ERROR',err);
+
+  })
 
     con.query('DELETE FROM escenariosprofesores WHERE id_escenario = '+id,(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
@@ -458,12 +492,14 @@ app.post('/addEscenario',(req,res) =>{
     let desc = req.body.descripcion
     let desde = req.body.desde
     let hacia = req.body.hacia
+    let txtF = req.body.txtFle
     let tipo = req.body.tipoF
     let texto = req.body.texto
     let x = req.body.posx
     let y = req.body.posy
     let ids = req.body.ids
 
+    let arrtxtF = txtF.split(";")
     let arrDesde = desde.split(";")
     let arrHacia = hacia.split(";")
     let arrTipo = tipo.split(";")
@@ -472,9 +508,9 @@ app.post('/addEscenario',(req,res) =>{
     let arrY = y.split(";")
     let arrIds = ids.split(";")
 
-    let idEsc,idElm
+    let idEsc
 
-    con.query('INSERT INTO escenariosprofesores(id_usuario,tipo) values(1,"'+nombre+'")',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosprofesores(id_usuario,tipo,descripcion) values(1,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
     con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{
@@ -495,7 +531,7 @@ app.post('/addEscenario',(req,res) =>{
                 arrIds[arrX.length-1-i] = respuesta[respuesta.length-1-i].id_elemento
             }
             for(let i=0;i<arrDesde.length;i++){
-                con.query('INSERT INTO relaciones(desde,hasta) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+')',(err,respuesta,fields)=>{
+                con.query('INSERT INTO relaciones(desde,hasta,txt) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+','+arrtxtF[i]+')',(err,respuesta,fields)=>{
                     if(err)return console.log('ERROR',err);
                     
                 })

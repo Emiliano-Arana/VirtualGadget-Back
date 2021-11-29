@@ -27,11 +27,13 @@
         </select>
         <button type="button" class="boton" onclick="addArrow()">Flecha</button>
       </form>
+      <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
       <form action="/addEscenario" method="post">
-        <input name="nombre" id="nombre" required pattern="^(?:3[01]|[12][0-9]|0?[1-9])([\-/.])(0?[1-9]|1[1-2])\1\d{4}$" maxlength="30">
-        <input name="descripcion" id="descripcion" required pattern="^(?:3[01]|[12][0-9]|0?[1-9])([\-/.])(0?[1-9]|1[1-2])\1\d{4}$" maxlength="100">
+        <input name="nombre" id="nombre" maxlength="30">
+        <input name="descripcion" id="descripcion" maxlength="100">
         <input type="text" id="desde" name="desde" style="display: none;">
         <input type="text" id="hacia" name="hacia" style="display: none;">
+        <input type="text" id="txtFle" name="txtFle" style="display: none;">
         <input type="text" id="tipoF" name="tipoF" style="display: none;">
         <input type="text" id="texto" name="texto" style="display: none;">
         <input type="text" id="posx" name="posx" style="display: none;">
@@ -43,7 +45,7 @@
     <canvas width="1200" height="800" id="lienzo"></canvas>
   </div>
   <script>
-    var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='';
+    var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
     var inicioX = 0, inicioY = 0;
     objetos = [];
     flechas = [];
@@ -142,6 +144,7 @@
     function prepararCamp(){
       document.getElementById('desde').value = '';
       document.getElementById('hacia').value = '';
+      document.getElementById('txtFle').value = '';
       document.getElementById('tipoF').value = '';
       document.getElementById('texto').value = '';
       document.getElementById('posx').value = '';
@@ -157,6 +160,7 @@
       for (var i = 0; i < flechas.length; i++) {
         document.getElementById('desde').value += flechas[i].desde+";";
         document.getElementById('hacia').value += flechas[i].hasta+";";
+        document.getElementById('txtFle').value += flechas[i].txt+";";
       }
       document.getElementById('tipoF').value = document.getElementById('tipoF').value.substring(0,document.getElementById('tipoF').value.length-1);
       document.getElementById('texto').value = document.getElementById('texto').value.substring(0,document.getElementById('texto').value.length-1);
@@ -165,6 +169,7 @@
       document.getElementById('ids').value = document.getElementById('ids').value.substring(0,document.getElementById('ids').value.length-1);
       document.getElementById('desde').value = document.getElementById('desde').value.substring(0,document.getElementById('desde').value.length-1);
       document.getElementById('hacia').value = document.getElementById('hacia').value.substring(0,document.getElementById('hacia').value.length-1);
+      document.getElementById('txtFle').value = document.getElementById('txtFle').value.substring(0,document.getElementById('txtFle').value.length-1);
     }
 
     function addFig(){
@@ -180,6 +185,11 @@
       actualizar();
     }
 
+    function deleteFig(){
+      boolDel = true;
+      
+    }
+
     function addArrow(){
       valorFle = document.getElementById('valorFl').value;
       flecha = true;
@@ -191,46 +201,153 @@
 
 
       cv.onmousedown = function(event) {
-        if(flecha){
-          if(elem1==-1){
-            for (var i = 0; i < objetos.length; i++) {
-              if(objetos[i].tipo=='proceso'){
-                if (objetos[i].x < event.clientX
-                  && (objetos[i].width + objetos[i].x > event.clientX)
-                  && objetos[i].y < event.clientY
-                  && (objetos[i].height + objetos[i].y > event.clientY)
-                ) {
-                  elem1=i;
-                  break;
-                }
-              }else if(objetos[i].tipo=='limites'){
-                if (objetos[i].x-(objetos[i].width/2) < event.clientX
-                  && (objetos[i].x + (objetos[i].width/2) > event.clientX)
-                  && objetos[i].y-(objetos[i].width/2) < event.clientY
-                  && ((objetos[i].width/2) + objetos[i].y > event.clientY)
-                ) {
-                  elem1=i;
-                  break;
-                }
-              }else if(objetos[i].tipo=='decision'){
-                if ((objetos[i].x-(objetos[i].width/2)) < event.clientX
-                  && ((objetos[i].width/2) + objetos[i].x > event.clientX)
-                  && objetos[i].y < event.clientY
-                  && (objetos[i].height + objetos[i].y > event.clientY)
-                ) {
-                  elem1=i;
-                  break;
-                }
-              }else if(objetos[i].tipo=='entradaSalida'){
-                if ((objetos[i].x-20) < event.clientX
-                  && (objetos[i].width + objetos[i].x > event.clientX)
-                  && objetos[i].y < event.clientY
-                  && (objetos[i].height + objetos[i].y > event.clientY)
-                ) {
-                  elem1=i;
-                  break;
+        if(boolDel){
+          for (var i = 0; i < objetos.length; i++) {
+                if(objetos[i].tipo=='proceso'){
+                  if (objetos[i].x < event.clientX
+                    && (objetos[i].width + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    delF = i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='limites'){
+                  if (objetos[i].x-(objetos[i].width/2) < event.clientX
+                    && (objetos[i].x + (objetos[i].width/2) > event.clientX)
+                    && objetos[i].y-(objetos[i].width/2) < event.clientY
+                    && ((objetos[i].width/2) + objetos[i].y > event.clientY)
+                  ) {
+                    delF = i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='decision'){
+                  if ((objetos[i].x-(objetos[i].width/2)) < event.clientX
+                    && ((objetos[i].width/2) + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    delF = i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='entradaSalida'){
+                  if ((objetos[i].x-20) < event.clientX
+                    && (objetos[i].width + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    delF = i;
+                    break;
+                  }
                 }
               }
+          objetos.splice(delF,1);
+          for(let i=0;i<flechas.length;i++){
+            if(flechas[i].hasta==delF||flechas[i].desde==delF){
+              flechas.splice(i,1)
+              i-=1;
+            }
+          }
+          for(let i=0;i<flechas.length;i++){
+            if(flechas[i].hasta>delF){
+              flechas[i].hasta-=1;
+            }
+            if(flechas[i].desde>delF){
+              flechas[i].desde-=1;
+            }
+          }
+          delF=-1;
+          boolDel = false;
+        }else{
+          if(flecha){
+            if(elem1==-1){
+              for (var i = 0; i < objetos.length; i++) {
+                if(objetos[i].tipo=='proceso'){
+                  if (objetos[i].x < event.clientX
+                    && (objetos[i].width + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    elem1=i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='limites'){
+                  if (objetos[i].x-(objetos[i].width/2) < event.clientX
+                    && (objetos[i].x + (objetos[i].width/2) > event.clientX)
+                    && objetos[i].y-(objetos[i].width/2) < event.clientY
+                    && ((objetos[i].width/2) + objetos[i].y > event.clientY)
+                  ) {
+                    elem1=i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='decision'){
+                  if ((objetos[i].x-(objetos[i].width/2)) < event.clientX
+                    && ((objetos[i].width/2) + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    elem1=i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='entradaSalida'){
+                  if ((objetos[i].x-20) < event.clientX
+                    && (objetos[i].width + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    elem1=i;
+                    break;
+                  }
+                }
+              }
+            }else{
+              for (var i = 0; i < objetos.length; i++) {
+                if(objetos[i].tipo=='proceso'){
+                  if (objetos[i].x < event.clientX
+                    && (objetos[i].width + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    elem2=i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='limites'){
+                  if (objetos[i].x-(objetos[i].width/2) < event.clientX
+                    && (objetos[i].x + (objetos[i].width/2) > event.clientX)
+                    && objetos[i].y-(objetos[i].width/2) < event.clientY
+                    && ((objetos[i].width/2) + objetos[i].y > event.clientY)
+                  ) {
+                    elem2=i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='decision'){
+                  if ((objetos[i].x-(objetos[i].width/2)) < event.clientX
+                    && ((objetos[i].width/2) + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    elem2=i;
+                    break;
+                  }
+                }else if(objetos[i].tipo=='entradaSalida'){
+                  if ((objetos[i].x-20) < event.clientX
+                    && (objetos[i].width + objetos[i].x > event.clientX)
+                    && objetos[i].y < event.clientY
+                    && (objetos[i].height + objetos[i].y > event.clientY)
+                  ) {
+                    elem2=i;
+                    break;
+                  }
+                }
+              }
+              flechas.push({
+                desde:elem1,
+                hasta:elem2,
+                txt:valorFle
+              });
+              elem1=-1;
+              elem2=-1;
+              flecha = false;
             }
           }else{
             for (var i = 0; i < objetos.length; i++) {
@@ -240,7 +357,9 @@
                   && objetos[i].y < event.clientY
                   && (objetos[i].height + objetos[i].y > event.clientY)
                 ) {
-                  elem2=i;
+                  objetoActual = objetos[i];
+                  inicioY = event.clientY - objetos[i].y;
+                  inicioX = event.clientX - objetos[i].x;
                   break;
                 }
               }else if(objetos[i].tipo=='limites'){
@@ -249,7 +368,9 @@
                   && objetos[i].y-(objetos[i].width/2) < event.clientY
                   && ((objetos[i].width/2) + objetos[i].y > event.clientY)
                 ) {
-                  elem2=i;
+                  objetoActual = objetos[i];
+                  inicioY = event.clientY - objetos[i].y;
+                  inicioX = event.clientX - objetos[i].x;
                   break;
                 }
               }else if(objetos[i].tipo=='decision'){
@@ -258,7 +379,9 @@
                   && objetos[i].y < event.clientY
                   && (objetos[i].height + objetos[i].y > event.clientY)
                 ) {
-                  elem2=i;
+                  objetoActual = objetos[i];
+                  inicioY = event.clientY - objetos[i].y;
+                  inicioX = event.clientX - objetos[i].x;
                   break;
                 }
               }else if(objetos[i].tipo=='entradaSalida'){
@@ -267,65 +390,11 @@
                   && objetos[i].y < event.clientY
                   && (objetos[i].height + objetos[i].y > event.clientY)
                 ) {
-                  elem2=i;
+                  objetoActual = objetos[i];
+                  inicioY = event.clientY - objetos[i].y;
+                  inicioX = event.clientX - objetos[i].x;
                   break;
                 }
-              }
-            }
-            flechas.push({
-              desde:elem1,
-              hasta:elem2,
-              txt:valorFle
-            });
-            elem1=-1;
-            elem2=-1;
-            flecha = false;
-          }
-        }else{
-          for (var i = 0; i < objetos.length; i++) {
-            if(objetos[i].tipo=='proceso'){
-              if (objetos[i].x < event.clientX
-                && (objetos[i].width + objetos[i].x > event.clientX)
-                && objetos[i].y < event.clientY
-                && (objetos[i].height + objetos[i].y > event.clientY)
-              ) {
-                objetoActual = objetos[i];
-                inicioY = event.clientY - objetos[i].y;
-                inicioX = event.clientX - objetos[i].x;
-                break;
-              }
-            }else if(objetos[i].tipo=='limites'){
-              if (objetos[i].x-(objetos[i].width/2) < event.clientX
-                && (objetos[i].x + (objetos[i].width/2) > event.clientX)
-                && objetos[i].y-(objetos[i].width/2) < event.clientY
-                && ((objetos[i].width/2) + objetos[i].y > event.clientY)
-              ) {
-                objetoActual = objetos[i];
-                inicioY = event.clientY - objetos[i].y;
-                inicioX = event.clientX - objetos[i].x;
-                break;
-              }
-            }else if(objetos[i].tipo=='decision'){
-              if ((objetos[i].x-(objetos[i].width/2)) < event.clientX
-                && ((objetos[i].width/2) + objetos[i].x > event.clientX)
-                && objetos[i].y < event.clientY
-                && (objetos[i].height + objetos[i].y > event.clientY)
-              ) {
-                objetoActual = objetos[i];
-                inicioY = event.clientY - objetos[i].y;
-                inicioX = event.clientX - objetos[i].x;
-                break;
-              }
-            }else if(objetos[i].tipo=='entradaSalida'){
-              if ((objetos[i].x-20) < event.clientX
-                && (objetos[i].width + objetos[i].x > event.clientX)
-                && objetos[i].y < event.clientY
-                && (objetos[i].height + objetos[i].y > event.clientY)
-              ) {
-                objetoActual = objetos[i];
-                inicioY = event.clientY - objetos[i].y;
-                inicioX = event.clientX - objetos[i].x;
-                break;
               }
             }
           }

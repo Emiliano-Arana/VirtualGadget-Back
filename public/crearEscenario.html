@@ -199,7 +199,6 @@
       cv = document.getElementById('lienzo');
       cx = cv.getContext('2d');
 
-
       cv.onmousedown = function(event) {
         if(boolDel){
           for (var i = 0; i < objetos.length; i++) {
@@ -241,19 +240,21 @@
                   }
                 }
               }
-          objetos.splice(delF,1);
-          for(let i=0;i<flechas.length;i++){
-            if(flechas[i].hasta==delF||flechas[i].desde==delF){
-              flechas.splice(i,1)
-              i-=1;
+          if(delF!=-1){
+            objetos.splice(delF,1);
+            for(let i=0;i<flechas.length;i++){
+              if(flechas[i].hasta==delF||flechas[i].desde==delF){
+                flechas.splice(i,1)
+                i-=1;
+              }
             }
-          }
-          for(let i=0;i<flechas.length;i++){
-            if(flechas[i].hasta>delF){
-              flechas[i].hasta-=1;
-            }
-            if(flechas[i].desde>delF){
-              flechas[i].desde-=1;
+            for(let i=0;i<flechas.length;i++){
+              if(flechas[i].hasta>delF){
+                flechas[i].hasta-=1;
+              }
+              if(flechas[i].desde>delF){
+                flechas[i].desde-=1;
+              }
             }
           }
           delF=-1;
@@ -300,6 +301,9 @@
                   }
                 }
               }
+              if(elem1==-1){
+                flecha = false;
+              }
             }else{
               for (var i = 0; i < objetos.length; i++) {
                 if(objetos[i].tipo=='proceso'){
@@ -340,11 +344,13 @@
                   }
                 }
               }
+              if(elem2!=-1){
               flechas.push({
                 desde:elem1,
                 hasta:elem2,
                 txt:valorFle
               });
+            }
               elem1=-1;
               elem2=-1;
               flecha = false;

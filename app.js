@@ -3,11 +3,11 @@ const mysql = require('mysql')
 var app = express()
 var bodyParser = require('body-parser')
 
-var con = mysql.createConnection({
-    host:'localhost',
-    user:'root',
-    password:'Arm%2312%3927',
-    database:'virtual_gadget'
+const con = mysql.createConnection({
+  host:'us-cdbr-east-04.cleardb.com', 
+  user: 'b3536c0cd563b4', 
+  password:'a038bf91',
+  database:'heroku_a5616534128b5ae' 
 })
 
 con.connect();
@@ -16,7 +16,7 @@ app.use(express.urlencoded({
     extended:true
 }))
 app.use(express.static('public'))
-
+//listo
 app.get('/getEscenarioAl',(req,res) =>{
     let id = req.query.id;
     let idsEl = []
@@ -32,7 +32,7 @@ app.get('/getEscenarioAl',(req,res) =>{
           desc = obj.descripcion
         })
 
-        con.query('SELECT * FROM elementos WHERE id_escenario = '+id,(err,respuesta,fields)=>{
+        con.query('SELECT elementos.id_elemento,elementos.ubicacion_x,elementos.ubicacion_y,elementos.descripcion,forma.nombre_forma FROM elementos INNER JOIN forma ON elementos.id_forma = forma.id_forma WHERE elementos.id_escenario = '+id,(err,respuesta,fields)=>{
             if(err)return console.log('ERROR',err);
 
             var fila=''
@@ -47,7 +47,7 @@ app.get('/getEscenarioAl',(req,res) =>{
                     x:${obj.ubicacion_x},y:${obj.ubicacion_y},
                     height:80,
                     width:120,
-                    tipo:'${obj.forma}',
+                    tipo:'${obj.nombre_forma}',
                     texto:'${obj.descripcion}'
                 });
             
@@ -55,7 +55,7 @@ app.get('/getEscenarioAl',(req,res) =>{
                     x:100,y:100,
                     height:80,
                     width:120,
-                    tipo:'${obj.forma}',
+                    tipo:'${obj.nombre_forma}',
                     texto:'${obj.descripcion}'
                 });
                 `
@@ -94,7 +94,7 @@ app.get('/getEscenarioAl',(req,res) =>{
                     flechas.push({
                         desde: ${d},
                         hasta: ${h},
-                        txt: '${obj.txt}'
+                        txt: '${obj.valor}'
                     });
                     `
                 })
@@ -387,7 +387,7 @@ app.get('/getEscenarioAl',(req,res) =>{
 })
     })
 })
-
+//listo
 app.get('/getEscenarioListAl',(req,res) =>{
 
     con.query('SELECT * FROM escenariosprofesores',(err,respuesta,fields)=>{
@@ -422,11 +422,11 @@ app.get('/getEscenarioListAl',(req,res) =>{
         )
     })
 })
-
+//listo
 app.get('/getEscenarioListPr',(req,res) =>{
     let idP = 1;
 
-    con.query('SELECT * FROM escenariosprofesores WHERE id_usuario = '+idP,(err,respuesta,fields)=>{
+    con.query('SELECT * FROM escenariosprofesores WHERE id_profe = '+idP,(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
         
         var fila=''
@@ -459,7 +459,7 @@ app.get('/getEscenarioListPr',(req,res) =>{
         )
     })
 })
-
+//listo
 app.post('/getEditEscenario',(req,res) =>{
   let id = req.body.id
   let idsEl = []
@@ -474,7 +474,7 @@ app.post('/getEditEscenario',(req,res) =>{
         desc = obj.descripcion
     })
 
-      con.query('SELECT * FROM elementos WHERE id_escenario = '+id,(err,respuesta,fields)=>{
+      con.query('SELECT elementos.id_elemento,elementos.ubicacion_x,elementos.ubicacion_y,elementos.descripcion,forma.nombre_forma FROM elementos INNER JOIN forma ON elementos.id_forma = forma.id_forma WHERE elementos.id_escenario = '+id,(err,respuesta,fields)=>{
           if(err)return console.log('ERROR',err);
 
           var fila=''
@@ -489,7 +489,7 @@ app.post('/getEditEscenario',(req,res) =>{
                   x:${obj.ubicacion_x},y:${obj.ubicacion_y},
                   height:80,
                   width:120,
-                  tipo:'${obj.forma}',
+                  tipo:'${obj.nombre_forma}',
                   texto:'${obj.descripcion}'
               });
               `
@@ -528,7 +528,7 @@ app.post('/getEditEscenario',(req,res) =>{
                   flechas.push({
                       desde: ${d},
                       hasta: ${h},
-                      txt: '${obj.txt}'
+                      txt: '${obj.valor}'
                   });
                   `
               })
@@ -969,7 +969,7 @@ app.post('/getEditEscenario',(req,res) =>{
 })
   })
 })
-
+//listo
 app.post('/deleteEscenario',(req,res) =>{
     let id = req.body.id
 
@@ -981,7 +981,7 @@ app.post('/deleteEscenario',(req,res) =>{
         )
     })
 })
-
+//listo
 app.post('/editEscenario',(req,res) =>{
   let nombre = req.body.nombre
   let desc = req.body.descripcion
@@ -998,11 +998,28 @@ app.post('/editEscenario',(req,res) =>{
   let arrtxtF = txtF.split(";")
   let arrDesde = desde.split(";")
   let arrHacia = hacia.split(";")
-  let arrTipo = tipo.split(";")
+  let arrTipoTxt = tipo.split(";")
   let arrTexto = texto.split(";")
   let arrX = x.split(";")
   let arrY = y.split(";")
   let arrIds = ids.split(";")
+
+  let arrTipo = new Array(arrTipoTxt.length)
+
+  for(let i=0;i<arrTipoTxt.length;i++){
+    if(arrTipoTxt[i]=='proceso'){
+      arrTipo[i]=1
+    }
+    if(arrTipoTxt[i]=='limites'){
+      arrTipo[i]=2
+    }
+    if(arrTipoTxt[i]=='decision'){
+      arrTipo[i]=3
+    }
+    if(arrTipoTxt[i]=='entradaSalida'){
+      arrTipo[i]=4
+    }
+  }
 
   con.query('update escenariosprofesores set tipo = "'+nombre+'",descripcion = "'+desc+'" where id_escenario = '+idEsc,(err,respuesta,fields)=>{
       if(err)return console.log('ERROR',err);
@@ -1011,7 +1028,7 @@ app.post('/editEscenario',(req,res) =>{
     if(err)return console.log('ERROR',err);
   })
       for(let i=0;i<arrX.length;i++){
-          con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+',"'+arrTipo[i]+'")',(err,respuesta,fields)=>{
+          con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,id_forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+','+arrTipo[i]+')',(err,respuesta,fields)=>{
               if(err)return console.log('ERROR',err);
       
           })
@@ -1023,7 +1040,7 @@ app.post('/editEscenario',(req,res) =>{
               arrIds[arrX.length-1-i] = respuesta[respuesta.length-1-i].id_elemento
           }
           for(let i=0;i<arrDesde.length;i++){
-              con.query('INSERT INTO relaciones(desde,hasta,txt) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+',"'+arrtxtF[i]+'")',(err,respuesta,fields)=>{
+              con.query('INSERT INTO relaciones(desde,hasta,valor) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+',"'+arrtxtF[i]+'")',(err,respuesta,fields)=>{
                   if(err)return console.log('ERROR',err);
                   
               })
@@ -1033,7 +1050,7 @@ app.post('/editEscenario',(req,res) =>{
       <p>listo</p>    
   `)
 })
-
+//listo
 app.post('/addEscenario',(req,res) =>{
     let nombre = req.body.nombre
     let desc = req.body.descripcion
@@ -1049,16 +1066,32 @@ app.post('/addEscenario',(req,res) =>{
     let arrtxtF = txtF.split(";")
     let arrDesde = desde.split(";")
     let arrHacia = hacia.split(";")
-    let arrTipo = tipo.split(";")
+    let arrTipoTxt = tipo.split(";")
     let arrTexto = texto.split(";")
     let arrX = x.split(";")
     let arrY = y.split(";")
     let arrIds = ids.split(";")
-    console.log(txtF)
+
+    let arrTipo = new Array(arrTipoTxt.length)
+
+    for(let i=0;i<arrTipoTxt.length;i++){
+      if(arrTipoTxt[i]=='proceso'){
+        arrTipo[i]=1
+      }
+      if(arrTipoTxt[i]=='limites'){
+        arrTipo[i]=2
+      }
+      if(arrTipoTxt[i]=='decision'){
+        arrTipo[i]=3
+      }
+      if(arrTipoTxt[i]=='entradaSalida'){
+        arrTipo[i]=4
+      }
+    }
 
     let idEsc
 
-    con.query('INSERT INTO escenariosprofesores(id_usuario,tipo,descripcion) values(1,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values(1,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
     con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{
@@ -1067,7 +1100,7 @@ app.post('/addEscenario',(req,res) =>{
             idEsc = maxim.id_escenario
         })
         for(let i=0;i<arrX.length;i++){
-            con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+',"'+arrTipo[i]+'")',(err,respuesta,fields)=>{
+            con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,id_forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+','+arrTipo[i]+')',(err,respuesta,fields)=>{
                 if(err)return console.log('ERROR',err);
         
             })
@@ -1079,7 +1112,7 @@ app.post('/addEscenario',(req,res) =>{
                 arrIds[arrX.length-1-i] = respuesta[respuesta.length-1-i].id_elemento
             }
             for(let i=0;i<arrDesde.length;i++){
-                con.query('INSERT INTO relaciones(desde,hasta,txt) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+',"'+arrtxtF[i]+'")',(err,respuesta,fields)=>{
+                con.query('INSERT INTO relaciones(desde,hasta,valor) values('+arrIds[arrDesde[i]]+','+arrIds[arrHacia[i]]+',"'+arrtxtF[i]+'")',(err,respuesta,fields)=>{
                     if(err)return console.log('ERROR',err);
                     
                 })
@@ -1090,7 +1123,7 @@ app.post('/addEscenario',(req,res) =>{
         <p>a</p>    
     `)
 })
-
+//listo
 app.post('/califEscAl',(req,res) =>{
     let calif = req.body.calif
     let id = req.body.idE
@@ -1110,7 +1143,7 @@ app.post('/califEscAl',(req,res) =>{
             desc = obj.descripcion
         })
     
-          con.query('SELECT * FROM elementos WHERE id_escenario = '+id,(err,respuesta,fields)=>{
+          con.query('SELECT elementos.id_elemento,elementos.ubicacion_x,elementos.ubicacion_y,elementos.descripcion,forma.nombre_forma FROM elementos INNER JOIN forma ON elementos.id_forma = forma.id_forma WHERE elementos.id_escenario = '+id,(err,respuesta,fields)=>{
               if(err)return console.log('ERROR',err);
     
               var fila=''
@@ -1125,7 +1158,7 @@ app.post('/califEscAl',(req,res) =>{
                       x:${obj.ubicacion_x},y:${obj.ubicacion_y},
                       height:80,
                       width:120,
-                      tipo:'${obj.forma}',
+                      tipo:'${obj.id_forma}',
                       texto:'${obj.descripcion}'
                   });
                   `
@@ -1164,7 +1197,7 @@ app.post('/califEscAl',(req,res) =>{
                       flechas.push({
                           desde: ${d},
                           hasta: ${h},
-                          txt: '${obj.txt}'
+                          txt: '${obj.valor}'
                       });
                       `
                   })

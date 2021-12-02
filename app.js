@@ -604,7 +604,7 @@ app.post('/getEditEscenario',(req,res) =>{
                   <input type="text" id="posy" name="posy" style="display: none;">
                   <input type="text" id="ids" name="ids" style="display: none;">
                   <input type="text" id="idEsc" name="idEsc" style="display: none;" value="${id}">
-                  <button type="submit" onclick="prepararCamp()">Guardar</button>
+                  <button type="submit" onclick="return prepararCamp()">Guardar</button>
                 </form>
               </div>
               <canvas width="1200" height="800" id="lienzo"></canvas>

@@ -175,7 +175,7 @@ app.get('/getEscenarioAl',(req,res) =>{
                     <button type="submit" onclick="comprobarResultados()" class="cal">Calificar</button>
                   </form>
                 </div>
-                <canvas width="875" height="800" id="lienzo"></canvas>
+                <canvas width="1000" height="1000" id="lienzo"></canvas>
               </div>
               <script>
                 var cv, cx, objetos,casillas,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',respuestasC;
@@ -186,7 +186,7 @@ app.get('/getEscenarioAl',(req,res) =>{
             
                 function actualizar() {
                   cx.fillStyle = '#E1E1E1';
-                  cx.fillRect(25, 80, 875, 800);
+                  cx.fillRect(25, 80, 1000, 1000);
                   cx.font = "12px sans-serif";
                   cx.fillStyle="black";
 
@@ -686,7 +686,7 @@ app.post('/getEditEscenario',(req,res) =>{
                 </form>
                 <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
               </div>
-              <canvas width="875" height="800" id="lienzo"></canvas>
+              <canvas width="1000" height="1000" id="lienzo"></canvas>
             </div>
             <script>
               var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
@@ -696,7 +696,7 @@ app.post('/getEditEscenario',(req,res) =>{
           
               function actualizar() {
                 cx.fillStyle = '#E1E1E1';
-                cx.fillRect(25, 80, 875, 800);
+                cx.fillRect(25, 80, 1000, 1000);
                 cx.font = "12px sans-serif";
                 cx.fillStyle="black";
                 for (var i = 0; i < objetos.length; i++) {
@@ -1379,7 +1379,7 @@ app.post('/califEscAl',(req,res) =>{
                   <p class="cr">${desc}</p>
                   <p class="test">Calificacion: ${calif}</p>
                   </div>
-                  <canvas width="875" height="800" id="lienzo"></canvas>
+                  <canvas width="1000" height="1000" id="lienzo"></canvas>
                 </div>
                 <script>
                   var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
@@ -1389,7 +1389,7 @@ app.post('/califEscAl',(req,res) =>{
               
                   function actualizar() {
                     cx.fillStyle = '#f0f0f0';
-                    cx.fillRect(25, 80, 875, 800);
+                    cx.fillRect(25, 80, 1000, 1000);
                     cx.font = "12px sans-serif";
                     cx.fillStyle="black";
                     for (var i = 0; i < objetos.length; i++) {

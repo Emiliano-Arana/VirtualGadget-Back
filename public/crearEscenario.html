@@ -50,7 +50,7 @@
       </form>
       <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
     </div>
-    <canvas width="875" height="800"id="lienzo"></canvas>
+    <canvas width="1000" height="1000"id="lienzo"></canvas>
   </div>
   <script>
     var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
@@ -60,7 +60,7 @@
 
     function actualizar() {
       cx.fillStyle = '#E1E1E1';
-      cx.fillRect(25, 80, 875, 800)
+      cx.fillRect(25, 80, 1000, 1000)
       cx.font = "12px sans-serif";
       cx.fillStyle="rgb(26, 31, 44)";
       for (var i = 0; i < objetos.length; i++) {

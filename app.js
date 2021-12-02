@@ -41,15 +41,6 @@ app.use(express.urlencoded({
 
 app.use(express.static('public'))
 
-app.get('/getProfesores',(req,res) =>{
-
-  con.query('select * from profesores',(err,respuesta,fields)=>{
-      if(err)return console.log('ERROR',err);
-      
-      console.log(respuesta)
-  })
-})
-
 //listo
 app.get('/getEscenarioAl',(req,res) =>{
     let id = req.query.id;
@@ -800,6 +791,10 @@ app.post('/getEditEscenario',(req,res) =>{
                 }
                 actualizar();
               }
+
+              function deleteFig(){
+                boolDel = true;
+              }
           
               function addArrow(){
                 valorFle = document.getElementById('valorFl').value;
@@ -1200,7 +1195,7 @@ app.post('/califEscAl',(req,res) =>{
     let id = req.body.idE
     let idsEl = []
     
-    con.query('INSERT INTO escenariosusuarios(id_escenario,id_usuario,calificacion) values('+id+',1,'+calif+')',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosusuarios(id_escenario,id_usuario,calificacion) values('+id+',5,'+calif+')',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
 
     })
@@ -1218,8 +1213,7 @@ app.post('/califEscAl',(req,res) =>{
               if(err)return console.log('ERROR',err);
     
               var fila=''
-              
-    
+              console.log(respuesta)
               respuesta.forEach(obj =>{
                   idsEl.push({
                       idE:obj.id_elemento
@@ -1229,7 +1223,7 @@ app.post('/califEscAl',(req,res) =>{
                       x:${obj.ubicacion_x},y:${obj.ubicacion_y},
                       height:80,
                       width:120,
-                      tipo:'${obj.id_forma}',
+                      tipo:'${obj.nombre_forma}',
                       texto:'${obj.descripcion}'
                   });
                   `
@@ -1250,7 +1244,7 @@ app.post('/califEscAl',(req,res) =>{
     
                   let des,has,d,h;
                   var filaF=''
-    
+
                   respuesta.forEach(obj =>{
                       des = obj.desde
                       has = obj.hasta
@@ -1275,7 +1269,7 @@ app.post('/califEscAl',(req,res) =>{
     
                   fila += filaF
                   
-    
+    console.log(fila)
           return res.send(
               `<!DOCTYPE html>
               <html lang="en">

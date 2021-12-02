@@ -34,6 +34,25 @@ function handleDisconnect() {
 
 handleDisconnect();
 
+let infoAlumno = {
+  idAlumno: 0,
+  setIdAlumno: function(idAlumno) {
+    this.idAlumno = idAlumno;
+  },
+  getIdAlumno() { 
+    return this.idAlumno;
+  }
+}
+let infoProfesor = {
+  idProfe: 0,
+  setIdProfe: function(idProfe) {
+    this.idProfe = idProfe;
+  },
+  getIdProfe() { 
+    return this.idProfe;
+  }
+}
+
 app.use( express.json() )
 app.use(express.urlencoded({
     extended:true
@@ -415,6 +434,8 @@ app.get('/getEscenarioAl',(req,res) =>{
 //listo
 app.get('/getEscenarioListAl',(req,res) =>{
 
+    infoAlumno.setIdAlumno(req.query.id_usuario);
+
     con.query('SELECT * FROM escenariosprofesores',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
         
@@ -449,9 +470,10 @@ app.get('/getEscenarioListAl',(req,res) =>{
 })
 //listo
 app.get('/getEscenarioListPr',(req,res) =>{
-    let idP = 15;
 
-    con.query('SELECT * FROM escenariosprofesores WHERE id_profe = '+idP,(err,respuesta,fields)=>{
+    infoProfesor.setIdProfe(req.query.id_profe);
+
+    con.query('SELECT * FROM escenariosprofesores WHERE id_profe = '+infoProfesor.getIdProfe(),(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
         
         var fila=''
@@ -478,6 +500,7 @@ app.get('/getEscenarioListPr',(req,res) =>{
                 <title>lista</title>
             </head>
             <body>
+                <a href="crearEscenario.html">a</a>
                 <table>${fila}</table>
             </body>
             </html>`
@@ -1157,7 +1180,7 @@ app.post('/addEscenario',(req,res) =>{
 
     let idEsc
 
-    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values(15,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values('+infoProfesor.getIdProfe()+',"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
     con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{
@@ -1195,7 +1218,7 @@ app.post('/califEscAl',(req,res) =>{
     let id = req.body.idE
     let idsEl = []
     
-    con.query('INSERT INTO escenariosusuarios(id_escenario,id_usuario,calificacion) values('+id+',5,'+calif+')',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosusuarios(id_escenario,id_usuario,calificacion) values('+id+','+infoAlumno.getIdAlumno()+','+calif+')',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
 
     })

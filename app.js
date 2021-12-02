@@ -3,19 +3,53 @@ const mysql = require('mysql')
 var app = express()
 var bodyParser = require('body-parser')
 
-const con = mysql.createConnection({
+var dbConfig= {
   host:'us-cdbr-east-04.cleardb.com',
   user: 'b3536c0cd563b4',
   password:'a038bf91',
   database:'heroku_a5616534128b5ae'
-})
+}
 
-con.connect();
+var con
+
+function handleDisconnect() {
+  con = mysql.createConnection(dbConfig); 
+
+  con.connect(function(err) {              
+    if(err) {                                     
+      console.log('error when connecting to db:', err);
+      setTimeout(handleDisconnect, 2000); 
+    }                                     
+  });                                     
+                                          
+  con.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+      handleDisconnect();
+    } else {                                      
+      throw err;                                  
+    }
+  });
+}
+
+handleDisconnect();
+
 app.use( express.json() )
 app.use(express.urlencoded({
     extended:true
 }))
+
 app.use(express.static('public'))
+
+app.get('/getProfesores',(req,res) =>{
+
+  con.query('select * from profesores',(err,respuesta,fields)=>{
+      if(err)return console.log('ERROR',err);
+      
+      console.log(respuesta)
+  })
+})
+
 //listo
 app.get('/getEscenarioAl',(req,res) =>{
     let id = req.query.id;
@@ -424,7 +458,7 @@ app.get('/getEscenarioListAl',(req,res) =>{
 })
 //listo
 app.get('/getEscenarioListPr',(req,res) =>{
-    let idP = 55;
+    let idP = 15;
 
     con.query('SELECT * FROM escenariosprofesores WHERE id_profe = '+idP,(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
@@ -1128,7 +1162,7 @@ app.post('/addEscenario',(req,res) =>{
 
     let idEsc
 
-    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values(45,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values(15,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
     con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{

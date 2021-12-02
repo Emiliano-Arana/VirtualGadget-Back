@@ -1498,7 +1498,6 @@ app.post('/califEscAl',(req,res) =>{
     
 })
 
+const PORT = process.env.PORT || 3000;
 
-app.listen(8080,()=>{
-    console.log('Servidor escuchando en el puerto 8080')
-})
+app.listen(PORT, () => console.log(`Server corriendo en el puerto ${PORT}`))

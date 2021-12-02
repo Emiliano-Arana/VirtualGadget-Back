@@ -4,10 +4,10 @@ var app = express()
 var bodyParser = require('body-parser')
 
 const con = mysql.createConnection({
-  host:'us-cdbr-east-04.cleardb.com', 
-  user: 'b3536c0cd563b4', 
+  host:'us-cdbr-east-04.cleardb.com',
+  user: 'b3536c0cd563b4',
   password:'a038bf91',
-  database:'heroku_a5616534128b5ae' 
+  database:'heroku_a5616534128b5ae'
 })
 
 con.connect();
@@ -424,7 +424,7 @@ app.get('/getEscenarioListAl',(req,res) =>{
 })
 //listo
 app.get('/getEscenarioListPr',(req,res) =>{
-    let idP = 1;
+    let idP = 55;
 
     con.query('SELECT * FROM escenariosprofesores WHERE id_profe = '+idP,(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
@@ -682,6 +682,31 @@ app.post('/getEditEscenario',(req,res) =>{
               }
           
               function prepararCamp(){
+                let nomb = document.getElementById('nombre').value;
+                let descr = document.getElementById('descripcion').value;
+                var patTxtFig = /^[0-9a-zA-Z ]/;
+
+                let verif = true;
+                for(var i=0;i<nomb.length;i++){
+                  if(patTxtFig.test(nomb[i])){
+          
+                  }else{
+                      verif = false;
+                  }
+                }
+                for(var i=0;i<descr.length;i++){
+                  if(patTxtFig.test(descr[i])){
+          
+                  }else{
+                      verif = false;
+                  }
+                }
+
+                if(verif){
+                  
+                }else{
+                  alert("Ingreso algun caracter invalido")
+                }
                 document.getElementById('desde').value = '';
                 document.getElementById('hacia').value = '';
                 document.getElementById('txtFle').value = '';
@@ -710,24 +735,36 @@ app.post('/getEditEscenario',(req,res) =>{
                 document.getElementById('desde').value = document.getElementById('desde').value.substring(0,document.getElementById('desde').value.length-1);
                 document.getElementById('hacia').value = document.getElementById('hacia').value.substring(0,document.getElementById('hacia').value.length-1);
                 document.getElementById('txtFle').value = document.getElementById('txtFle').value.substring(0,document.getElementById('txtFle').value.length-1);
+                return verif;
               }
           
               function addFig(){
                 let forma = document.getElementById('forma').value;
                 let txtFig = document.getElementById('textoFig').value;
-                objetos.push({
-                  x:100,y:100,
-                  height:80,
-                  width:120,
-                  tipo:forma,
-                  texto:txtFig
-                })
+
+                var patTxtFig = /^[0-9a-zA-Z ]/;
+
+                let verif = true;
+                for(var i=0;i<txtFig.length;i++){
+                  if(patTxtFig.test(txtFig[i])){
+
+                  }else{
+                      verif = false;
+                  }
+                }
+
+                if(verif){
+                  objetos.push({
+                    x:100,y:100,
+                    height:80,
+                    width:120,
+                    tipo:forma,
+                    texto:txtFig
+                  })
+                }else{
+                  alert("Ingreso algun caracter invalido")
+                }
                 actualizar();
-              }
-          
-              function deleteFig(){
-                boolDel = true;
-                
               }
           
               function addArrow(){
@@ -1091,7 +1128,7 @@ app.post('/addEscenario',(req,res) =>{
 
     let idEsc
 
-    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values(1,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
+    con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values(45,"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
     con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{

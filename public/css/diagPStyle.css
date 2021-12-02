@@ -1,39 +1,246 @@
 *{
     padding: 0;
     margin: 0;
+    transition: all.2s linear;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .texto{
+    padding: 5px 0;
     margin: 10px auto;
+    width: 250px;
     display: flex;
-    padding: 3px;
-    font-size: 20px;
+    text-align: center;
+    font-size: 18px;
+    background: rgb(255, 255, 255);
+    border-radius: 5px;
+    border: transparent;
+    color: #1847ac;
+    font-weight: 700;
 }
-
+h1{
+    color: white;
+    font-size: 24px;
+}
+.fa-object-ungroup{
+    color: white;
+    font-size: 24px;
+    margin: 0px 10px;
+}
+.fa-project-diagram{
+    color: rgb(189, 220, 255);
+    font-size: 24px;
+    margin: 0px 10px;
+}
+.fa-book-reader{
+    color: rgb(214, 189, 255);
+    font-size: 24px;
+    margin: 0px 10px;
+    margin-left: 10px;
+}
+.fa-tools{
+    color: rgb(189, 220, 255);
+    font-size: 24px;
+    margin: 0px 10px;
+}
+.titulo{
+    margin-top: 50px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 0;
+}
 .boton{
     display: flex;
-    margin: 10px auto;
-    padding: 6px;
+    margin: 20px auto;
+    padding: 6px 50px;
     font-size: 18px;
-    border-radius: 10px;
-    background-color: beige;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(50, 87, 156);
+    border: transparent;
 }
-
-#forma,#valorFl{
+.botoned{
     display: flex;
-    margin: 10px auto;
+    margin: 20px auto;
+    padding: 6px 50px;
+    font-size: 18px;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(61, 50, 156);
+    border: transparent;
+}
+.botonel{
+    display: flex;
+    margin: 20px auto;
+    padding: 6px 50px;
+    font-size: 18px;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(97, 20, 20);
+    border: transparent;
+}
+.boton:hover{
+    background-color: rgb(62, 93, 151);
+}
+#forma,#valorFl{
+    border-radius: 5px;
+    color: rgb(71, 71, 71);
+    width: 250px;
+    display: flex;
+    margin: 20px auto;
     padding: 3px;
     font-size: 20px;
+    background: rgba(238, 238, 238, 0.534);
+    text-align: center;
+}
+form{
+    width: 100%;
+    padding-top: 10px;
+    text-align: center;
 }
 
 .left-side{
-    width: 300px;
-    height: 800px;
-    border: 1px solid;
-    float: right;
+    width: 350px;
+    height: 100vh;
+    float: right; 
+    background-image: linear-gradient(to right, #1847ac, #61229c);
+    /* background: rgb(26, 31, 44); */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .lienzo{
+    
     position: relative;
-    float: left;
+    float: left; 
+}
+.esc{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+#descripcion{
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px 0;
+    width: 250px;
+    font-weight: 700;
+}
+#nombre{
+    text-align: center;
+    padding: 5px 0;
+    width: 250px;
+    font-weight: 700;
+}
+.nomb{
+    color: white;
+}
+.cr{
+    color: white;
+    background: rgba(255, 255, 255, 0.103);
+    width: 100%;
+    padding: 30px 0;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 20px;
+}
+.es{
+    font-size: 36px;
+    color: white;
+    text-align: center;
+    width: 70%;
+}
+.welcome{
+    color: white;
+    font-size: 18px;
+    margin-top: 20px;
+}
+.tit{
+    color: white;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+.cal{
+    display: flex;
+    margin: 20px auto;
+    padding: 6px 50px;
+    font-size: 18px;
+    border-radius: 5px;
+    color: white;
+    background-color: rgb(50, 87, 156);
+    border: transparent;
+}
+.test{
+    margin-top: 20px;
+    font-size: 28px;
+    color: white;
+    text-align: center;
+}
+section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f1f4f9, #dff1ff);
+}
+section .color{
+    position: fixed;
+    filter: blur(150px);
+}
+  
+section .color:nth-child(1){
+    top: -350px;
+    width: 800px;
+    height: 800px;
+    background: #d3a4ff;
+}
+  
+section .color:nth-child(2){
+    bottom: -150px;
+    left: 100px;
+    width: 550px;
+    height: 550px;
+    background: #7aa4ff;
+}
+  
+section .color:nth-child(3){
+    bottom: 50px;
+    right: 100px;
+    width: 400px;
+    height: 400px;
+    background: #b7a1ff;
+}
+.box{
+    position: relative;
+    flex-wrap: wrap;
+    text-align: center;
+    
+}
+.ep{
+    color: white;
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+a{
+    text-decoration: none;
+    color: #2469ff;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+td{
+    padding: 0 30px;
+}
+.title{
+    text-align: center;
+    font-size: 36px;
+}
+table{
+    margin-top: 30px;
 }

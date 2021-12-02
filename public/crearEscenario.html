@@ -5,32 +5,39 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/diagPStyle.css">
+  <link rel="shortcut icon" href="img/logo_small_icon_only_inverted.ico">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
   <title>Crear Escenario</title>
 </head>
 <body>
   <div class="interact-container">
     <div class="left-side">
+      <div class="titulo">
+        <i class="far fa-object-ungroup"></i><h1> Creador de Escenarios</h1><i class="far fa-object-ungroup"></i>
+      </div>
       <form>
+        <h1>Forma</h1>
         <input name="texto" type="text" id="textoFig" class="texto" placeholder="Ingrese el texto" required pattern="^(?:3[01]|[12][0-9]|0?[1-9])([\-/.])(0?[1-9]|1[1-2])\1\d{4}$" maxlength="30">
         <select name="tipo" id="forma">
-          <option value="proceso">proceso</option>
-          <option value="limites">limites</option>
-          <option value="decision">decision</option>
-          <option value="entradaSalida">entradaSalida</option>
+          <option value="proceso">Proceso</option>
+          <option value="limites">Limites</option>
+          <option value="decision">Decision</option>
+          <option value="entradaSalida">Entrada-Salida</option>
         </select>
         <button type="button" class="boton" onclick="addFig()">Agregar</button>
       </form>
       <form>
+        <h1>Conexión</h1>
         <select name="valorFlecha" id="valorFl">
           <option value="Si">Verdadero</option>
           <option value="No">Falso</option>
         </select>
         <button type="button" class="boton" onclick="addArrow()">Flecha</button>
       </form>
-      <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
-      <form action="/addEscenario" method="post">
-        <input name="nombre" id="nombre" maxlength="30">
-        <input name="descripcion" id="descripcion" maxlength="100">
+      <form action="/addEscenario" method="post" class="esc">
+        <h1>Datos</h1>
+        <input name="nombre" id="nombre" placeholder="titulo" maxlength="30">
+        <input name="descripcion" id="descripcion" placeholder="descripcion" maxlength="500">
         <input type="text" id="desde" name="desde" style="display: none;">
         <input type="text" id="hacia" name="hacia" style="display: none;">
         <input type="text" id="txtFle" name="txtFle" style="display: none;">
@@ -39,10 +46,11 @@
         <input type="text" id="posx" name="posx" style="display: none;">
         <input type="text" id="posy" name="posy" style="display: none;">
         <input type="text" id="ids" name="ids" style="display: none;">
-        <button type="submit" onclick="return prepararCamp()">Guardar</button>
+        <button type="submit" onclick="return prepararCamp()" class="boton">Guardar</button>
       </form>
+      <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
     </div>
-    <canvas width="1200" height="800" id="lienzo"></canvas>
+    <canvas width="875" height="800"id="lienzo"></canvas>
   </div>
   <script>
     var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
@@ -51,10 +59,10 @@
     flechas = [];
 
     function actualizar() {
-      cx.fillStyle = '#f0f0f0';
-      cx.fillRect(0, 0, 1200, 800);
+      cx.fillStyle = '#E1E1E1';
+      cx.fillRect(25, 80, 875, 800)
       cx.font = "12px sans-serif";
-      cx.fillStyle="black";
+      cx.fillStyle="rgb(26, 31, 44)";
       for (var i = 0; i < objetos.length; i++) {
         if(objetos[i].tipo=='proceso'){
           cx.beginPath();
@@ -146,7 +154,7 @@
       let descr = document.getElementById('descripcion').value;
       var patTxtFig = /^[0-9a-zA-Z ]/;
 
-      let verif = true;
+      let verif = true,ret = true;
       for(var i=0;i<nomb.length;i++){
         if(patTxtFig.test(nomb[i])){
 
@@ -163,10 +171,15 @@
       }
 
 
-      if(verif){
+      if(verif && flechas.length>=1){
         
       }else{
-        alert("Ingreso algun caracter invalido")
+        ret = false;
+        if(verif){
+          alert("Necesita crear por lo menos una conexión")
+        }else{
+          alert("Ingreso algun caracter invalido")
+        }
       }
       document.getElementById('desde').value = '';
       document.getElementById('hacia').value = '';
@@ -196,7 +209,7 @@
       document.getElementById('desde').value = document.getElementById('desde').value.substring(0,document.getElementById('desde').value.length-1);
       document.getElementById('hacia').value = document.getElementById('hacia').value.substring(0,document.getElementById('hacia').value.length-1);
       document.getElementById('txtFle').value = document.getElementById('txtFle').value.substring(0,document.getElementById('txtFle').value.length-1);
-      return verif;
+      return ret;
     }
 
     function addFig(){

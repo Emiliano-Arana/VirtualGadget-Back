@@ -154,20 +154,28 @@ app.get('/getEscenarioAl',(req,res) =>{
               <meta http-equiv="X-UA-Compatible" content="IE=edge">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <link rel="stylesheet" href="css/diagPStyle.css">
-              <title>Crear Escenario</title>
+              <link rel="shortcut icon" href="img/logo_small_icon_only_inverted.ico">
+              <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+              <title>Escenario</title>
             </head>
             <body>
               <div class="interact-container">
                 <div class="left-side">
-                  <p>${nom}</p>
-                  <p>${desc}</p>
+                  <div class="titulo">
+                  <i class="fas fa-project-diagram"></i><h1 class="es">Escenarios</h1><i class="fas fa-project-diagram"></i>
+                  </div>
+                  <p class="welcome">Bienvenido usuario, realiza tu escenario</p>
+                  <h3 class="tit">Titulo</h3>
+                  <p class="nomb">${nom}</p>
+                  <h3 class="tit">Descripción</h3>
+                  <p class="cr">${desc}</p>
                   <form action="/califEscAl" method="post">
                     <input type="text" id="calif" name="calif" style="display: none;">
                     <input type="text" id="idE" name="idE" style="display: none;" value="${id}">
-                    <button type="submit" onclick="comprobarResultados()">Calificar</button>
+                    <button type="submit" onclick="comprobarResultados()" class="cal">Calificar</button>
                   </form>
                 </div>
-                <canvas width="1200" height="800" id="lienzo"></canvas>
+                <canvas width="875" height="800" id="lienzo"></canvas>
               </div>
               <script>
                 var cv, cx, objetos,casillas,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',respuestasC;
@@ -177,8 +185,8 @@ app.get('/getEscenarioAl',(req,res) =>{
                 casillas = [];
             
                 function actualizar() {
-                  cx.fillStyle = '#f0f0f0';
-                  cx.fillRect(0, 0, 1200, 800);
+                  cx.fillStyle = '#E1E1E1';
+                  cx.fillRect(25, 80, 875, 800);
                   cx.font = "12px sans-serif";
                   cx.fillStyle="black";
 
@@ -443,11 +451,20 @@ app.get('/getEscenarioListAl',(req,res) =>{
         console.log(respuesta)
 
         respuesta.forEach(esc =>{
-            fila += `<tr style="width: 100px; border: 1px solid;">
+            fila += `<tr style="width: 300px; border: 1px solid; background: rgba(255, 255, 255, 0.3);
+            height:100px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 25 45px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-right: 1px solid rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            animation: animate 10s linear infinite;
+            animation-delay: calc(-1s * var(--i));">
             <form method="get" action="/getEscenarioAl">
                 <td><input value="${esc.id_escenario}" class="id" style="display: none;" name="id" type="text"></td>
                 <td>${esc.tipo}</td>
-                <td><button type="submit">Cargar</td>
+                <td><button type="submit" class="boton">Cargar</td>
             </form>
         </tr>`
         })
@@ -459,10 +476,20 @@ app.get('/getEscenarioListAl',(req,res) =>{
                 <meta charset="UTF-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>lista</title>
+                <title>Escenarios</title>
+                <link rel="stylesheet" href="css/diagPStyle.css">
+                <link rel="shortcut icon" href="img/logo_small_icon_only_inverted.ico">
             </head>
             <body>
-                <table>${fila}</table>
+                <section>
+                  <div class="color"></div>
+                  <div class="color"></div>
+                  <div class="color"></div>
+                  <div class="box">
+                    <h1 class="title">Escenarios Disponibles</h1>
+                    <table>${fila}</table>
+                  </div>
+                </section>
             </body>
             </html>`
         )
@@ -470,7 +497,6 @@ app.get('/getEscenarioListAl',(req,res) =>{
 })
 //listo
 app.get('/getEscenarioListPr',(req,res) =>{
-
     infoProfesor.setIdProfe(req.query.id_profe);
 
     con.query('SELECT * FROM escenariosprofesores WHERE id_profe = '+infoProfesor.getIdProfe(),(err,respuesta,fields)=>{
@@ -480,12 +506,23 @@ app.get('/getEscenarioListPr',(req,res) =>{
         console.log(respuesta)
 
         respuesta.forEach(esc =>{
-            fila += `<tr style="width: 100px; border: 1px solid;">
+            fila += `<tr style="width: 300px; border: 1px solid; background: rgba(255, 255, 255, 0.3);
+            height:100px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 25 45px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-right: 1px solid rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            align-items: center;
+            animation: animate 10s linear infinite;
+            animation-delay: calc(-1s * var(--i));">
             <form method="post">
                 <td><input value="${esc.id_escenario}" class="id" style="display: none;" name="id" type="text"></td>
                 <td>${esc.tipo}</td>
-                <td><button type="submit" formaction="/getEditEscenario">Editar</td>
-                <td><button type="submit" formaction="/deleteEscenario">Eliminar</td>
+
+                <td><button class="botoned" type="submit" formaction="/getEditEscenario">Editar</td>
+                <td><button class="botonel" type="submit" formaction="/deleteEscenario">Eliminar</td>
             </form>
         </tr>`
         })
@@ -497,11 +534,22 @@ app.get('/getEscenarioListPr',(req,res) =>{
                 <meta charset="UTF-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>lista</title>
+                <title>Escenarios</title>
+                <link rel="stylesheet" href="css/diagPStyle.css">
+                <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+                <link rel="shortcut icon" href="img/logo_small_icon_only_inverted.ico">
             </head>
             <body>
-                <a href="crearEscenario.html">a</a>
-                <table>${fila}</table>
+              <section>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="box">
+                  <h1 class="ep">Escenarios Profesor</h1>
+                  <a href="crearEscenario.html" class="crear">Crear Escenario</a>
+                  <table>${fila}</table>
+                </div>
+              </section>
             </body>
             </html>`
         )
@@ -592,12 +640,18 @@ app.post('/getEditEscenario',(req,res) =>{
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="css/diagPStyle.css">
-            <title>Crear Escenario</title>
+            <link rel="shortcut icon" href="img/logo_small_icon_only_inverted.ico">
+            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+            <title>Editor Escenario</title>
           </head>
           <body>
             <div class="interact-container">
               <div class="left-side">
+                <div class="titulo">
+                  <i class="fas fa-tools"></i><h1> Editor de Escenarios</h1><i class="fas fa-tools"></i>
+                </div>
                 <form>
+                  <h1>Forma</h1>
                   <input name="texto" type="text" id="textoFig" class="texto" placeholder="Ingrese el texto" maxlength="30">
                   <select name="tipo" id="forma">
                     <option value="proceso">proceso</option>
@@ -608,14 +662,15 @@ app.post('/getEditEscenario',(req,res) =>{
                   <button type="button" class="boton" onclick="addFig()">Agregar</button>
                 </form>
                 <form>
+                  <h1>Conexión</h1>
                   <select name="valorFlecha" id="valorFl">
                     <option value="Si">Verdadero</option>
                     <option value="No">Falso</option>
                   </select>
                   <button type="button" class="boton" onclick="addArrow()">Flecha</button>
                 </form>
-                <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
-                <form action="/editEscenario" method="post">
+                <form action="/editEscenario" method="post" class="esc">
+                  <h1>Datos</h1>
                   <input name="nombre" id="nombre" maxlength="30" value="${nom}">
                   <input name="descripcion" id="descripcion" maxlength="500" value="${desc}">
                   <input type="text" id="desde" name="desde" style="display: none;">
@@ -627,10 +682,11 @@ app.post('/getEditEscenario',(req,res) =>{
                   <input type="text" id="posy" name="posy" style="display: none;">
                   <input type="text" id="ids" name="ids" style="display: none;">
                   <input type="text" id="idEsc" name="idEsc" style="display: none;" value="${id}">
-                  <button type="submit" onclick="return prepararCamp()">Guardar</button>
+                  <button type="submit" onclick="return prepararCamp()" class="boton">Guardar</button>
                 </form>
+                <button type="button" class="boton" onclick="deleteFig()">Borrar</button>
               </div>
-              <canvas width="1200" height="800" id="lienzo"></canvas>
+              <canvas width="875" height="800" id="lienzo"></canvas>
             </div>
             <script>
               var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
@@ -639,8 +695,8 @@ app.post('/getEditEscenario',(req,res) =>{
               flechas = [];
           
               function actualizar() {
-                cx.fillStyle = '#f0f0f0';
-                cx.fillRect(0, 0, 1200, 800);
+                cx.fillStyle = '#E1E1E1';
+                cx.fillRect(25, 80, 875, 800);
                 cx.font = "12px sans-serif";
                 cx.fillStyle="black";
                 for (var i = 0; i < objetos.length; i++) {
@@ -734,7 +790,7 @@ app.post('/getEditEscenario',(req,res) =>{
                 let descr = document.getElementById('descripcion').value;
                 var patTxtFig = /^[0-9a-zA-Z ]/;
 
-                let verif = true;
+                let verif = true,ret=true;
                 for(var i=0;i<nomb.length;i++){
                   if(patTxtFig.test(nomb[i])){
           
@@ -750,10 +806,15 @@ app.post('/getEditEscenario',(req,res) =>{
                   }
                 }
 
-                if(verif){
-                  
+                if(verif && flechas.length>=1){
+        
                 }else{
-                  alert("Ingreso algun caracter invalido")
+                  ret = false;
+                  if(verif){
+                    alert("Necesita crear por lo menos una conexión")
+                  }else{
+                    alert("Ingreso algun caracter invalido")
+                  }
                 }
                 document.getElementById('desde').value = '';
                 document.getElementById('hacia').value = '';
@@ -783,7 +844,7 @@ app.post('/getEditEscenario',(req,res) =>{
                 document.getElementById('desde').value = document.getElementById('desde').value.substring(0,document.getElementById('desde').value.length-1);
                 document.getElementById('hacia').value = document.getElementById('hacia').value.substring(0,document.getElementById('hacia').value.length-1);
                 document.getElementById('txtFle').value = document.getElementById('txtFle').value.substring(0,document.getElementById('txtFle').value.length-1);
-                return verif;
+                return ret;
               }
           
               function addFig(){
@@ -1301,16 +1362,24 @@ app.post('/califEscAl',(req,res) =>{
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <link rel="stylesheet" href="css/diagPStyle.css">
-                <title>Crear Escenario</title>
+                <link rel="shortcut icon" href="img/logo_small_icon_only_inverted.ico">
+                <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+                <title>Calificacion</title>
               </head>
               <body>
                 <div class="interact-container">
                   <div class="left-side">
-                  <p>${nom}</p>
-                  <p>${desc}</p>
-                  <p>calificacion:${calif}</p>
+                  <div class="titulo">
+                  <i class="fas fa-book-reader"></i><h1 class="es">Escenarios</h1><i class="fas fa-book-reader"></i>
                   </div>
-                  <canvas width="1200" height="800" id="lienzo"></canvas>
+                  <p class="welcome">Datos Registrados</p>
+                  <h3 class="tit">Titulo</h3>
+                  <p class="nomb">${nom}</p>
+                  <h3 class="tit">Descripción</h3>
+                  <p class="cr">${desc}</p>
+                  <p class="test">Calificacion: ${calif}</p>
+                  </div>
+                  <canvas width="875" height="800" id="lienzo"></canvas>
                 </div>
                 <script>
                   var cv, cx, objetos,flecha = false, objetoActual = null,elem1=-1,elem2=-1,flechas,valorFle='',boolDel=false,delF=-1;
@@ -1320,7 +1389,7 @@ app.post('/califEscAl',(req,res) =>{
               
                   function actualizar() {
                     cx.fillStyle = '#f0f0f0';
-                    cx.fillRect(0, 0, 1200, 800);
+                    cx.fillRect(25, 80, 875, 800);
                     cx.font = "12px sans-serif";
                     cx.fillStyle="black";
                     for (var i = 0; i < objetos.length; i++) {

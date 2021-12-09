@@ -174,6 +174,7 @@ app.get('/getEscenarioAl',(req,res) =>{
                     <input type="text" id="idE" name="idE" style="display: none;" value="${id}">
                     <button type="submit" onclick="comprobarResultados()" class="cal">Calificar</button>
                   </form>
+                  <a href="/getEscenarioListAl?id_usuario=${infoAlumno.getIdAlumno()}"><button class="boton">Cancelar</button></a>
                 </div>
                 <canvas width="1200" height="850" id="lienzo"></canvas>
               </div>
@@ -590,6 +591,7 @@ app.post('/getEditEscenario',(req,res) =>{
               });
               `
           })
+          console.log(respuesta)
 
           let txtQuery = ''
 
@@ -1126,9 +1128,7 @@ app.post('/deleteEscenario',(req,res) =>{
     con.query('DELETE FROM escenariosprofesores WHERE id_escenario = '+id,(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
 
-        return res.send(
-            `<p>exito</p>`
-        )
+        return res.redirect('/getEscenarioListPr?id_profe='+infoProfesor.getIdProfe())
     })
 })
 //listo
@@ -1183,7 +1183,7 @@ app.post('/editEscenario',(req,res) =>{
       
           })
       }
-      con.query('SELECT id_elemento FROM elementos',(err,respuesta,fields)=>{
+      con.query('SELECT id_elemento FROM elementos WHERE id_escenario = '+idEsc,(err,respuesta,fields)=>{
           if(err)return console.log('ERROR',err);
           
           for(let i=0;i<arrX.length;i++){
@@ -1196,9 +1196,7 @@ app.post('/editEscenario',(req,res) =>{
               })
           }
       })
-  return res.send(`
-      <p>listo</p>    
-  `)
+      return res.redirect('/getEscenarioListPr?id_profe='+infoProfesor.getIdProfe())
 })
 //listo
 app.post('/addEscenario',(req,res) =>{
@@ -1244,12 +1242,15 @@ app.post('/addEscenario',(req,res) =>{
     con.query('INSERT INTO escenariosprofesores(id_profe,tipo,descripcion) values('+infoProfesor.getIdProfe()+',"'+nombre+'","'+desc+'")',(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
     })
-    con.query('SELECT id_escenario FROM escenariosprofesores',(err,respuesta,fields)=>{
+    con.query('select id_escenario FROM escenariosprofesores WHERE id_profe = '+infoProfesor.getIdProfe(),(err,respuesta,fields)=>{
         if(err)return console.log('ERROR',err);
         respuesta.forEach(maxim =>{
             idEsc = maxim.id_escenario
         })
+
         for(let i=0;i<arrX.length;i++){
+          console.log(idEsc)
+          console.log(arrTexto[i])
             con.query('INSERT INTO elementos(id_escenario,descripcion,ubicacion_x,ubicacion_y,id_forma) values('+idEsc+',"'+arrTexto[i]+'",'+arrX[i]+','+arrY[i]+','+arrTipo[i]+')',(err,respuesta,fields)=>{
                 if(err)return console.log('ERROR',err);
         
@@ -1269,9 +1270,7 @@ app.post('/addEscenario',(req,res) =>{
             }
         })
     })
-    return res.send(`
-        <p>a</p>    
-    `)
+    return res.redirect('/getEscenarioListPr?id_profe='+infoProfesor.getIdProfe())
 })
 //listo
 app.post('/califEscAl',(req,res) =>{
@@ -1378,6 +1377,7 @@ app.post('/califEscAl',(req,res) =>{
                   <h3 class="tit">Descripción</h3>
                   <p class="cr">${desc}</p>
                   <p class="test">Calificacion: ${calif}</p>
+                  <a href="/getEscenarioListAl?id_usuario=${infoAlumno.getIdAlumno()}"><button class="boton">Regresar</button></a>
                   </div>
                   <canvas width="1200" height="850" id="lienzo"></canvas>
                 </div>
@@ -1498,6 +1498,5 @@ app.post('/califEscAl',(req,res) =>{
     
 })
 
-const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log(`Server corriendo en el puerto ${PORT}`))
+app.listen(8080, () => console.log(`Server corriendo en el puerto 8080`))
